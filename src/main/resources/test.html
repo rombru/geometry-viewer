@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WKT on a Map</title>
+    <link rel="stylesheet" href="leaflet.css">
+    <style>
+        html,body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="leaflet.js"></script>
+<script src="wellknown.js"></script>
+
+<script>
+    var map = L.map('map').setView([0, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+
+    var wkt = "GEOMETRYCOLLECTION (POINT (10 20), LINESTRING (10 20, 30 40, 50 60), POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10)))";
+    var feature = L.geoJson(wellknown.parse(wkt))
+
+    if (feature.getBounds) {
+        map.addLayer(feature);
+        map.fitBounds(feature.getBounds());
+    } else {
+        map.addLayer(feature);
+        map.setView(feature.getLatLng(), 14);
+    }
+</script>
+
+</body>
+</html>

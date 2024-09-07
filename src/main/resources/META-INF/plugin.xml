@@ -1,0 +1,56 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+  <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+  <id>be.bruyere.romain.geometry-viewer</id>
+
+  <!-- Public plugin name should be written in Title Case.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+  <name>Geometry Viewer</name>
+
+  <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+  <vendor email="rom.bruyere@gmail.com" url="https://github.com/rombru/geometry-viewer">Romain Bruyère</vendor>
+
+  <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+       Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+  <description><![CDATA[
+    <h3>Overview</h3>
+    <p>
+    The JTS & WKT Geometry Viewer plugin enhances your development experience
+    by providing a tool to visualize JTS (Java Topology Suite) and WKT (Well-Known Text) geometries directly within IntelliJ IDEA.
+    Integrated into the debug mode,
+    this plugin adds a context menu action that allows you to view geometric data on an interactive map,
+    making it easier to understand and debug spatial data.
+    </p>
+
+    <h3>Features</h3>
+    <ul>
+    <li>
+    Context Menu Integration:
+    Adds a "View on a map" option to the context (right-click) menu of JTS and WKT geometry variables during a debugging session.
+    </li>
+    <li>
+    Support for JTS and WKT formats: Handles all the different types of geometries provided by JTS and WKT.
+    </li>
+    </ul>
+  ]]></description>
+
+  <!-- Product and plugin compatibility requirements.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.java</depends>
+  <depends>com.intellij.modules.java</depends>
+  <depends>com.intellij.platform.images</depends>
+
+  <!-- Extension points defined by the plugin.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+  <extensions defaultExtensionNs="com.intellij">
+
+
+  </extensions>
+    <actions>
+        <action id="GeometryViewerActionId" class="GeometryViewerAction" text="View on a map" description="View on a map">
+            <add-to-group group-id="XDebugger.ValueGroup" relative-to-action="Debugger.ViewText" anchor="before"/>
+        </action>
+    </actions>
+</idea-plugin>

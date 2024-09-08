@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "be.bruyere.romain"
-version = "1.0"
+version = "2023.0.0"
 
 repositories {
   mavenCentral()
@@ -28,17 +28,18 @@ dependencies {
 
 tasks {
   withType<JavaCompile> {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
   }
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
+      jvmTarget.set(JvmTarget.JVM_17)
     }
   }
 
   patchPluginXml {
     sinceBuild.set("231")
+    untilBuild.set("233.*")
   }
 
   signPlugin {

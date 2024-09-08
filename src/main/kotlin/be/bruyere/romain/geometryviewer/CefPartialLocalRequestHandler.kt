@@ -8,7 +8,7 @@ import org.cef.handler.CefResourceRequestHandler
 import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
-import java.net.URL
+import java.net.URI
 
 private typealias CefResourceProvider = () -> CefResourceHandler?
 
@@ -24,7 +24,7 @@ class CefPartialLocalRequestHandler(
             frame: CefFrame?,
             request: CefRequest
         ): CefResourceHandler? {
-            val url = URL(request.url)
+            val url = URI.create(request.url).toURL()
             if (!url.protocol.equals(myProtocol) || !url.authority.equals(myAuthority)) {
                 return null
             }

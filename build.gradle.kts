@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "be.bruyere.romain"
-version = "1.0"
+version = "2024.0.0"
 
 repositories {
   mavenCentral()
@@ -16,7 +16,7 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-  version.set("2023.1") // Lowest target IDE Version
+  version.set("2024.1") // Lowest target IDE Version
   type.set("IC") // Target IDE Platform
 
   plugins.set(listOf("java", "com.intellij.platform.images"))
@@ -28,17 +28,18 @@ dependencies {
 
 tasks {
   withType<JavaCompile> {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
   }
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
+      jvmTarget.set(JvmTarget.JVM_17)
     }
   }
 
   patchPluginXml {
-    sinceBuild.set("231")
+    sinceBuild.set("241")
+    untilBuild.set("")
   }
 
   signPlugin {

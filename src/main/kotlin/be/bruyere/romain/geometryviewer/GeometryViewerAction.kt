@@ -3,7 +3,6 @@ import be.bruyere.romain.geometryviewer.GeometryViewerException
 import be.bruyere.romain.geometryviewer.GetWktDebuggerCommandImpl
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.debugger.engine.JavaValue
-import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
@@ -121,9 +120,5 @@ class GeometryViewerAction : AnAction(), DumbAware {
             """^\s*(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)\s*\(\s*(.+)\s*\)\s*$"""
         )
         return wktRegex.matches(input)
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
     }
 }

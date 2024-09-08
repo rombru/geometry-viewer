@@ -4,7 +4,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
-import org.intellij.images.editor.impl.jcef.CefStreamResourceHandler
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.ActionEvent

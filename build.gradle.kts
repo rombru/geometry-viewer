@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "be.bruyere.romain"
-version = "2024.0.0"
+version = "2024.1.0"
 
 repositories {
   mavenCentral()
@@ -40,6 +40,7 @@ tasks {
   patchPluginXml {
     sinceBuild.set("241")
     untilBuild.set("")
+    changeNotes.set("Changes the dialog window for it to be modal")
   }
 
   signPlugin {

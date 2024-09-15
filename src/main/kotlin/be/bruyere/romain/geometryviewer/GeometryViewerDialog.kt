@@ -33,12 +33,13 @@ class GeometryViewerDialog(wkt: String) : DialogWrapper(true), Disposable {
             addResource(requestHandler, "/images/marker-icon-2x.png", "image/png")
             addResource(requestHandler, "/images/marker-shadow.png", "image/png")
             jbCefBrowser.loadHTML(buildHtml(wkt))
-            jbCefBrowser.getJBCefClient().addRequestHandler(requestHandler, jbCefBrowser.getCefBrowser())
+            jbCefBrowser.jbCefClient.addRequestHandler(requestHandler, jbCefBrowser.cefBrowser)
         } else {
             jbCefBrowser = null
         }
 
         init()
+        isModal = false
         title = "View on a map"
     }
 

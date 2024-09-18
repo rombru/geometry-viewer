@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "be.bruyere.romain"
-version = "2024.1.0"
+version = "2024.2.0"
 
 repositories {
   mavenCentral()

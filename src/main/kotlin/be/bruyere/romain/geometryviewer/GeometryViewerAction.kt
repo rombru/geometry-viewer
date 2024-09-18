@@ -1,19 +1,22 @@
 import be.bruyere.romain.geometryviewer.GeometryViewerDialog
 import be.bruyere.romain.geometryviewer.GeometryViewerException
-import be.bruyere.romain.geometryviewer.GetWktDebuggerCommandImpl
+import be.bruyere.romain.geometryviewer.CustomDebuggerCommandImpl
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.debugger.engine.JavaValue
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.xdebugger.impl.ui.tree.actions.XDebuggerTreeActionBase
+import com.jetbrains.jdi.IntegerValueImpl
 import com.jetbrains.jdi.ObjectReferenceImpl
 import com.jetbrains.jdi.StringReferenceImpl
 import com.sun.jdi.Method
+import com.sun.jdi.Value
 import org.locationtech.jts.geom.*
 
 
 private const val TO_TEXT_METHOD = "toText"
+private const val GET_SRID_METHOD = "getSRID"
 
 class GeometryViewerAction : AnAction(), DumbAware {
 
@@ -36,9 +39,11 @@ class GeometryViewerAction : AnAction(), DumbAware {
             targetObjectRef != null &&
             supportedClassNames.contains(targetObjectRef.referenceType().name())
         ) {
-            val method = getToTextMethod(targetObjectRef)
-            val wkt = getWkt(event, targetObjectRef, targetValue, method)
-            val dialog = GeometryViewerDialog(wkt.value())
+            val toTextMethod = getToTextMethod(targetObjectRef)
+            val wkt = getWkt(event, targetObjectRef, targetValue, toTextMethod)
+            val getSRIDMethod = getGetSRIDMethod(targetObjectRef)
+            val srid = getSRID(event, targetObjectRef, targetValue, getSRIDMethod)
+            val dialog = GeometryViewerDialog(wkt.value(), srid.value())
             dialog.show()
         } else if (targetObjectRef is StringReferenceImpl && isWKT(targetObjectRef.value())) {
             val dialog = GeometryViewerDialog(targetObjectRef.value())
@@ -53,16 +58,41 @@ class GeometryViewerAction : AnAction(), DumbAware {
         event: AnActionEvent,
         targetObjectRef: ObjectReferenceImpl,
         targetValue: JavaValue,
-        method: Method?
+        toTextMethod: Method?
     ): StringReferenceImpl {
+        val value = executeMethod(event, targetObjectRef, targetValue, toTextMethod)
+        return value as? StringReferenceImpl ?: throw GeometryViewerException("No geometry is attached to the event")
+    }
+
+    /**
+     * Get the SRID of the geometry attached to the target object.
+     */
+    private fun getSRID(
+        event: AnActionEvent,
+        targetObjectRef: ObjectReferenceImpl,
+        targetValue: JavaValue,
+        getSRIDMethod: Method?
+    ): IntegerValueImpl {
+        val value = executeMethod(event, targetObjectRef, targetValue, getSRIDMethod)
+        return value as? IntegerValueImpl ?: throw GeometryViewerException("No geometry is attached to the event")
+    }
+
+    /**
+     * Executes a method in the debug session context for the current project on the target object.
+     */
+    private fun executeMethod(
+        event: AnActionEvent,
+        targetObjectRef: ObjectReferenceImpl,
+        targetValue: JavaValue,
+        method: Method?
+    ): Value? {
         val project = event.project ?: throw GeometryViewerException("No project attached to the event")
         val session = DebuggerManagerEx.getInstanceEx(project).context.debuggerSession
         val context = session?.process?.suspendManager?.pausedContext
         val managerThread = targetValue.evaluationContext.managerThread
-        val command = GetWktDebuggerCommandImpl(context, targetObjectRef, method)
+        val command = CustomDebuggerCommandImpl(context, targetObjectRef, method)
         managerThread.invokeAndWait(command)
-        val value = command.result
-        return value as? StringReferenceImpl ?: throw GeometryViewerException("No geometry is attached to the event")
+        return command.result
     }
 
     /**
@@ -71,6 +101,13 @@ class GeometryViewerAction : AnAction(), DumbAware {
      */
     private fun getToTextMethod(targetObjectRef: ObjectReferenceImpl): Method? =
         targetObjectRef.referenceType().methodsByName(TO_TEXT_METHOD)[0]
+
+    /**
+     * Get the reference of the JTS Geometry.getSRID() method of the target object.
+     * This method will be used to get the SRID of the geometry.
+     */
+    private fun getGetSRIDMethod(targetObjectRef: ObjectReferenceImpl): Method? =
+        targetObjectRef.referenceType().methodsByName(GET_SRID_METHOD)[0]
 
     /**
      * Get the object reference of the selected node in the debugger tree.

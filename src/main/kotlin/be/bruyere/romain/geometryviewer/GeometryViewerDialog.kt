@@ -18,7 +18,7 @@ private const val PREFERRED_HEIGHT = 600
 
 private const val UNIQUE_SIZE_KEY = "#be.bruyere.romain.geometryviewer.ViewerDialog"
 
-class GeometryViewerDialog(wkt: String) : DialogWrapper(true), Disposable {
+class GeometryViewerDialog(wkt: String, srid: Int = 4326) : DialogWrapper(true), Disposable {
     private val jbCefBrowser: JBCefBrowser?
 
     init {
@@ -31,7 +31,7 @@ class GeometryViewerDialog(wkt: String) : DialogWrapper(true), Disposable {
             addResource(requestHandler, "/images/marker-icon.png", "image/png")
             addResource(requestHandler, "/images/marker-icon-2x.png", "image/png")
             addResource(requestHandler, "/images/marker-shadow.png", "image/png")
-            jbCefBrowser.loadHTML(buildHtml(wkt))
+            jbCefBrowser.loadHTML(buildHtml(wkt, srid))
             jbCefBrowser.jbCefClient.addRequestHandler(requestHandler, jbCefBrowser.cefBrowser)
         } else {
             jbCefBrowser = null
@@ -55,12 +55,18 @@ class GeometryViewerDialog(wkt: String) : DialogWrapper(true), Disposable {
     /**
      * Fill viewer.html with the content of scripts and the WKT geometry.
      */
-    fun buildHtml(wkt: String): String {
+    fun buildHtml(wkt: String, srid: Int): String {
         val leafletJS: String =
             javaClass.getResource("/leaflet.js")?.readText()
                 ?: throw GeometryViewerException("The file leaflet.js is not found")
         val wellknownJS: String =
             javaClass.getResource("/wellknown.js")?.readText()
+                ?: throw GeometryViewerException("The file wellknown.js is not found")
+        val proj4JS: String =
+            javaClass.getResource("/proj4.js")?.readText()
+                ?: throw GeometryViewerException("The file wellknown.js is not found")
+        val spatialRefJS: String =
+            javaClass.getResource("/spatial_ref.js")?.readText()
                 ?: throw GeometryViewerException("The file wellknown.js is not found")
         val viewerHtml: String =
             javaClass.getResource("/viewer.html")?.readText()
@@ -69,6 +75,9 @@ class GeometryViewerDialog(wkt: String) : DialogWrapper(true), Disposable {
         return viewerHtml
             .replace("<!-- LEAFLET_JS -->", leafletJS)
             .replace("<!-- WELLKNOWN -->", wellknownJS)
+            .replace("<!-- PROJ4 -->", proj4JS)
+            .replace("<!-- SPATIAL_REF -->", spatialRefJS)
+            .replace("<!-- SRID -->", srid.toString())
             .replace("<!-- WKT -->", wkt)
     }
 

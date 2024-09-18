@@ -7,10 +7,10 @@ import com.sun.jdi.Method
 import com.sun.jdi.Value
 
 /**
- * Command to execute the method to get the WKT on a target object during a debug session
+ * Command to execute a method on a target object during a debug session
  * The command implements DebuggerCommandImpl to be executable inside a manager thread
  */
-class GetWktDebuggerCommandImpl(
+class CustomDebuggerCommandImpl(
     private val context: SuspendContextImpl?,
     private val objectReference: ObjectReferenceImpl,
     private val method: Method?

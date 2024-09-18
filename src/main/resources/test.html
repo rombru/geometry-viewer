@@ -25,8 +25,41 @@
 <!-- Leaflet JS -->
 <script src="leaflet.js"></script>
 <script src="wellknown.js"></script>
+<script src="proj4.js"></script>
+<script src="spatial_ref.js"></script>
 
 <script>
+    function reproject(geoJson, sourceSrid) {
+        switch (geoJson.type) {
+            case 'Point':
+                geoJson.coordinates = proj4(sourceSrid, '4326', geoJson.coordinates);
+                break;
+            case 'LineString':
+            case 'MultiPoint':
+                geoJson.coordinates = geoJson.coordinates.map(coord => proj4(sourceSrid, '4326', coord));
+                break;
+            case 'Polygon':
+            case 'MultiLineString':
+                geoJson.coordinates = geoJson.coordinates.map(ring =>
+                    ring.map(coord => proj4(sourceSrid, '4326', coord))
+                );
+                break;
+            case 'MultiPolygon':
+                geoJson.coordinates = geoJson.coordinates.map(polygon =>
+                    polygon.map(ring =>
+                        ring.map(coord => proj4(sourceSrid, '4326', coord))
+                    )
+                );
+                break;
+            case 'GeometryCollection':
+                geoJson.geometries = geoJson.geometries.map(geometry => reproject(geometry, sourceSrid));
+                break;
+        }
+        return geoJson;
+    }
+
+    proj4.defs(spatial_ref_sys.map(x => [`${x.srid}`, x.proj4text]));
+
     var map = L.map('map').setView([0, 0], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

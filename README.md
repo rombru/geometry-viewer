@@ -8,7 +8,7 @@ this plugin adds a context menu action that allows you to view geometric data on
 making it easier to understand and debug spatial data.
 
 ## Requirements
-- Intellij IDEA 2023.1+
+- Intellij IDEA 2020.2+
 
 ## Features
 - Adds a "View on a map" option to the context (right-click) menu of JTS and WKT geometry variables during a debugging session.

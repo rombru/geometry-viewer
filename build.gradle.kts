@@ -40,7 +40,7 @@ tasks {
   patchPluginXml {
     sinceBuild.set("211")
     untilBuild.set("213.*")
-    changeNotes.set("Changes the dialog window for it to be modal")
+    changeNotes.set("Reproject JTS geometries based on their SRID")
   }
 
   signPlugin {

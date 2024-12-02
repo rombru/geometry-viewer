@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link href="%sveltekit.assets%/favicon.png" rel="icon"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    %sveltekit.head%
+</head>
+<script>
+    window["initialGeometryMessageList"] = [];
+    window["addGeometry"] = function addGeometry(name, wkt, srid) {
+        window["initialGeometryMessageList"].push({name, wkt, srid});
+    }
+</script>
+<body data-sveltekit-preload-data="hover">
+<div style="display: contents">%sveltekit.body%</div>
+</body>
+</html>

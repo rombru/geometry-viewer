@@ -1,5 +1,6 @@
 package be.bruyere.romain.geometryviewer
 
+import com.intellij.openapi.Disposable
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefRequestHandlerAdapter
@@ -8,15 +9,19 @@ import org.cef.handler.CefResourceRequestHandler
 import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
+import org.intellij.images.editor.impl.jcef.CefStreamResourceHandler
 import java.net.URI
+import java.net.URLConnection
 
-private typealias CefResourceProvider = () -> CefResourceHandler?
+private const val INDEX_HTML = "/index.html"
+private const val INDEX_HTML_MIME_TYPE = "text/html"
 
 class CefPartialLocalRequestHandler(
     private val myProtocol: String,
-    private val myAuthority: String
+    private val myAuthority: String,
+    private val disposable: Disposable
 ) : CefRequestHandlerAdapter() {
-    private val myResources: MutableMap<String, CefResourceProvider> = HashMap()
+    private val fileNameMap = URLConnection.getFileNameMap();
 
     private val handler = object : CefResourceRequestHandlerAdapter() {
         override fun getResourceHandler(
@@ -25,15 +30,22 @@ class CefPartialLocalRequestHandler(
             request: CefRequest
         ): CefResourceHandler? {
             val url = URI.create(request.url).toURL()
-            if (!url.protocol.equals(myProtocol) || !url.authority.equals(myAuthority)) {
+            if (url.protocol != myProtocol || url.authority != myAuthority) {
                 return null
             }
-            return myResources[url.path]?.let { it() }
+            var mimeType = fileNameMap.getContentTypeFor(request.url)
+            var path = request.url.replace("http://localhost","")
+            if (path == "/") {
+                path = INDEX_HTML
+                mimeType = INDEX_HTML_MIME_TYPE
+            }
+            return CefStreamResourceHandler(
+                javaClass.getResourceAsStream(path)!!,
+                mimeType,
+                disposable,
+                mapOf("Access-Control-Allow-Origin" to "*")
+            )
         }
-    }
-
-    fun addResource(resourcePath: String, resourceProvider: CefResourceProvider) {
-        myResources[resourcePath] = resourceProvider
     }
 
     override fun getResourceRequestHandler(

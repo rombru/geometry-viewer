@@ -1,0 +1,2 @@
+export const DEFAULT_DATA_PROJECTION = 4326;
+export const DEFAULT_OSM_PROJECTION = 3857;

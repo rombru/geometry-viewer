@@ -40,7 +40,7 @@ tasks {
   patchPluginXml {
     sinceBuild.set("221")
     untilBuild.set("223.*")
-    changeNotes.set("Reproject JTS geometries based on their SRID")
+    changeNotes.set("Reworked the viewer integration")
   }
 
   signPlugin {

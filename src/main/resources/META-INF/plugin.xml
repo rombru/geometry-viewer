@@ -32,6 +32,9 @@
     <li>
     Support for JTS and WKT formats: Handles all the different types of geometries provided by JTS and WKT.
     </li>
+    <li>
+    Handles the visualization of multiple geometries at the same time with different symbologies.
+    </li>
     </ul>
   ]]></description>
 

@@ -1,11 +1,14 @@
-import be.bruyere.romain.geometryviewer.GeometryViewerDialog
 import be.bruyere.romain.geometryviewer.GeometryViewerException
 import be.bruyere.romain.geometryviewer.CustomDebuggerCommandImpl
+import be.bruyere.romain.geometryviewer.GeometryViewerFrame
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.debugger.engine.JavaValue
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.util.Disposer
 import com.intellij.xdebugger.impl.ui.tree.actions.XDebuggerTreeActionBase
 import com.jetbrains.jdi.IntegerValueImpl
 import com.jetbrains.jdi.ObjectReferenceImpl
@@ -19,6 +22,10 @@ private const val TO_TEXT_METHOD = "toText"
 private const val GET_SRID_METHOD = "getSRID"
 
 class GeometryViewerAction : AnAction(), DumbAware {
+
+    private val wktRegex = Regex(
+        """^\s*(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)\s*\(\s*(.+)\s*\)\s*$"""
+    )
 
     // List of JTS classes that can be displayed in the viewer
     private val supportedClasses = listOf(
@@ -43,12 +50,17 @@ class GeometryViewerAction : AnAction(), DumbAware {
             val wkt = getWkt(event, targetObjectRef, targetValue, toTextMethod)
             val getSRIDMethod = getGetSRIDMethod(targetObjectRef)
             val srid = getSRID(event, targetObjectRef, targetValue, getSRIDMethod)
-            val dialog = GeometryViewerDialog(wkt.value(), srid.value())
-            dialog.show()
-        } else if (targetObjectRef is StringReferenceImpl && isWKT(targetObjectRef.value())) {
-            val dialog = GeometryViewerDialog(targetObjectRef.value())
-            dialog.show()
+            GeometryViewerFrame.show(targetValue.name, wkt.value(), srid.value())
+        } else if (targetValue != null && targetObjectRef is StringReferenceImpl && isWKT(targetObjectRef.value())) {
+            val wkt = targetObjectRef.value()
+            GeometryViewerFrame.show(targetValue.name, wkt)
         }
+
+        val disposable = Disposable {
+            GeometryViewerFrame.closeBrowser()
+            println("Resources disposed")
+        }
+        Disposer.register(event.project!!, disposable);
     }
 
     /**
@@ -153,9 +165,6 @@ class GeometryViewerAction : AnAction(), DumbAware {
      * Check if a string is a WKT
      */
     private fun isWKT(input: String): Boolean {
-        val wktRegex = Regex(
-            """^\s*(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON|GEOMETRYCOLLECTION)\s*\(\s*(.+)\s*\)\s*$"""
-        )
         return wktRegex.matches(input)
     }
 }

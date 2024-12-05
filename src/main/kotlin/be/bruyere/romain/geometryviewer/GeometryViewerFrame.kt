@@ -156,9 +156,10 @@ object GeometryViewerFrame {
     }
 
     fun closeBrowser() {
+        jFrame?.dispose()
+        jFrame = null
         jbCefBrowser?.dispose()
         jbCefBrowser = null
-        jFrame = null
     }
 
 

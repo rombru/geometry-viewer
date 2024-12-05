@@ -9,7 +9,6 @@ import org.cef.handler.CefResourceRequestHandler
 import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
-import org.intellij.images.editor.impl.jcef.CefStreamResourceHandler
 import java.net.URI
 import java.net.URLConnection
 
@@ -39,11 +38,10 @@ class CefPartialLocalRequestHandler(
                 path = INDEX_HTML
                 mimeType = INDEX_HTML_MIME_TYPE
             }
-            return CefStreamResourceHandler(
+            return CustomCefStreamResourceHandler(
                 javaClass.getResourceAsStream(path)!!,
                 mimeType,
-                disposable,
-                mapOf("Access-Control-Allow-Origin" to "*")
+                disposable
             )
         }
     }

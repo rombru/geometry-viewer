@@ -85,6 +85,8 @@ object GeometryViewerFrame {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE)
 
         val browser = JBCefBrowser.createBuilder()
+            .setClient(JBCefApp.getInstance().createClient())
+            .setEnableOpenDevToolsMenuItem(true)
             .setOffScreenRendering(false)
             .build()
         val requestHandler = CefPartialLocalRequestHandler(UrlUtils.DEFAULT_PROTOCOL, UrlUtils.DEFAULT_AUTHORITY, browser)

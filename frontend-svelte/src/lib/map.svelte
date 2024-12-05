@@ -10,7 +10,7 @@
     });
 
     $effect(() => {
-        for (const message of geometryMessageList.toReversed()) {
+        for (const message of Array.from(geometryMessageList).reverse()) {
             if (!message.feature) {
                 MapService.addGeometry(message);
             }

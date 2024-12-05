@@ -12,7 +12,7 @@
         if (evt && evt.dataTransfer) {
             evt.dataTransfer.dropEffect = "move";
         }
-        const rows = table.querySelectorAll("tr").values()
+        const rows = Array.from(table.querySelectorAll("tr"))
             .map(el => {
                 const bounding = el.getBoundingClientRect();
                 const offset = evt.clientY - bounding.top;

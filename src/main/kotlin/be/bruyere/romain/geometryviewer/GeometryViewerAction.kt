@@ -4,7 +4,6 @@ import be.bruyere.romain.geometryviewer.GeometryViewerFrame
 import com.intellij.debugger.DebuggerManagerEx
 import com.intellij.debugger.engine.JavaValue
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware

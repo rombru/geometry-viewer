@@ -33,6 +33,12 @@ class CefPartialLocalRequestHandler(
                 return null
             }
             var mimeType = fileNameMap.getContentTypeFor(request.url)
+            if(mimeType == null && request.url.endsWith(".js")) {
+                mimeType = "text/javascript"
+            } else if(mimeType == null && request.url.endsWith(".css")) {
+                mimeType = "text/css"
+            }
+
             var path = request.url.replace("http://localhost","")
             if (path == "/") {
                 path = INDEX_HTML

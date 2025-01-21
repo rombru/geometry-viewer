@@ -1,6 +1,7 @@
 package be.bruyere.romain.geometryviewer
 
 import com.intellij.openapi.Disposable
+import com.intellij.ui.jcef.utils.JBCefStreamResourceHandler
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefRequestHandlerAdapter
@@ -9,7 +10,6 @@ import org.cef.handler.CefResourceRequestHandler
 import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
-import org.intellij.images.editor.impl.jcef.CefStreamResourceHandler
 import java.net.URI
 import java.net.URLConnection
 
@@ -21,7 +21,7 @@ class CefPartialLocalRequestHandler(
     private val myAuthority: String,
     private val disposable: Disposable
 ) : CefRequestHandlerAdapter() {
-    private val fileNameMap = URLConnection.getFileNameMap();
+    private val fileNameMap = URLConnection.getFileNameMap()
 
     private val handler = object : CefResourceRequestHandlerAdapter() {
         override fun getResourceHandler(
@@ -39,7 +39,7 @@ class CefPartialLocalRequestHandler(
                 path = INDEX_HTML
                 mimeType = INDEX_HTML_MIME_TYPE
             }
-            return CefStreamResourceHandler(
+            return JBCefStreamResourceHandler(
                 javaClass.getResourceAsStream(path)!!,
                 mimeType,
                 disposable,

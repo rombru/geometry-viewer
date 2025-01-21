@@ -19,6 +19,7 @@ repositories {
   }
 }
 
+val jtsVersion = "1.19.0"
 dependencies {
   intellijPlatform {
 //    create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
@@ -27,7 +28,7 @@ dependencies {
     bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
     jetbrainsRuntime() // EAP
   }
-  implementation("org.locationtech.jts:jts-core:1.19.0")
+  implementation("org.locationtech.jts:jts-core:$jtsVersion")
 }
 
 intellijPlatform {

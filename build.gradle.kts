@@ -39,7 +39,7 @@ tasks {
 
   patchPluginXml {
     sinceBuild.set("241")
-    untilBuild.set("")
+    untilBuild.set("243.*")
     changeNotes.set("Reworked the viewer integration")
   }
 
